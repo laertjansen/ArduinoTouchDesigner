@@ -1,0 +1,73 @@
+// Sending PIR data from Arduino into TouchDesigner
+// When the PIR detects motion, it sends 0 or 1 to TouchDesigner to toggle the background color.
+// I was also experimenting with a motor, so those lines are currently commented out.
+
+const int LED1 = 7;
+const int LED2 = 8;
+const int pirPin = 3;
+
+#define pinForward 9
+#define pinBackward 10
+
+int motorSpeed = 180;          
+int motorPulse = 600; //How much the motor will rotate
+
+int cardState = 0;
+
+int pirLast = LOW;
+
+unsigned long lastTrigger = 0;
+unsigned long debounceTime = 2000;
+
+void setup() {
+  Serial.begin(9600);
+
+  pinMode(LED1, OUTPUT);
+  pinMode(LED2, OUTPUT);
+  pinMode(pirPin, INPUT);
+
+  // pinMode(pinForward, OUTPUT);
+  // pinMode(pinBackward, OUTPUT);
+
+  digitalWrite(LED1, LOW);
+  digitalWrite(LED2, LOW);
+}
+
+void loop() {
+  int pirValue = digitalRead(pirPin);
+  unsigned long now = millis();
+
+  if (pirValue == HIGH && pirLast == LOW && now - lastTrigger > debounceTime) {
+
+    // toggle
+    cardState = !cardState;
+
+    if (cardState == 1) {
+      // turn forward
+      // analogWrite(pinForward, motorSpeed);
+      // analogWrite(pinBackward, LOW);
+
+      digitalWrite(LED1, HIGH);
+      digitalWrite(LED2, LOW);
+      Serial.println(1);   // Send to TouchDesigner
+
+    } else {
+      // turn backward
+      // analogWrite(pinForward, LOW);
+      // analogWrite(pinBackward, motorSpeed);
+
+      digitalWrite(LED1, LOW);
+      digitalWrite(LED2, HIGH);
+      Serial.println(0);   // Send to TouchDesigner
+    }
+
+    // delay(motorPulse);
+
+    // analogWrite(pinForward, LOW);
+    // analogWrite(pinBackward, LOW);
+
+    lastTrigger = now;
+  }
+
+  pirLast = pirValue;
+}
