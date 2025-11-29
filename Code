@@ -1,4 +1,4 @@
-// Sending PIR data from Arduino into TouchDesigner
+// Sending PIR data from Arduino into TouchDesigner.
 // When the PIR detects motion, it sends 0 or 1 to TouchDesigner to toggle the background color.
 // I was also experimenting with a motor, so those lines are currently commented out.
 
